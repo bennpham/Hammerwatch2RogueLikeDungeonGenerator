@@ -9,3 +9,4 @@ coverage/
 *.tsbuildinfo
 parameters.txt
 *.stackdump
+out-scenarios/

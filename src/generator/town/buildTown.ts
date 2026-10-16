@@ -35,6 +35,8 @@ export interface TownBand {
   label: string
   /** null = open from the start */
   flag: string | null
+  /** floating text at a sealed entrance */
+  sealedHint?: string
   entry: ExitTarget
 }
 
@@ -166,7 +168,7 @@ export function buildTown(spec: TownSpec): Hw2Level {
       lvl.link(approach, open)
       return
     }
-    const sealed = lvl.addScript('ShowFloatingText', hx, hy - 24, [P.str('Text', `${band.label}: sealed until you reach it from above`), P.int('FloatingType', FLOAT_HINT)])
+    const sealed = lvl.addScript('ShowFloatingText', hx, hy - 24, [P.str('Text', band.sealedHint ?? `${band.label}: sealed`), P.int('FloatingType', FLOAT_HINT)])
     const hint = lvl.addScript('CheckFlag', hx + 96, hy, [P.str('Flag', band.flag), P.ids('OnTrue', [open.id]), P.ids('OnFalse', [sealed.id])])
     lvl.link(approach, hint)
     const enable = lvl.addScript('ToggleScripts', hx - 48, hy + 96, [P.int('State', 1), P.ids('Scripts', [exit.id])])
