@@ -1,0 +1,64 @@
+{
+  "name": "hammerwatch2-roguelike-dungeon-generator",
+  "version": "0.1.0",
+  "description": "Rogue-like dungeon generator for Hammerwatch 2 (.hsc scenarios)",
+  "main": "out/main/index.js",
+  "author": "bennpham",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "electron-vite dev",
+    "start": "electron-vite preview",
+    "build": "npm run typecheck && electron-vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "scan": "node scripts/scan-hw2-assets.mjs",
+    "gen": "node scripts/run-ts.mjs scripts/dev/gen.ts",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win"
+  },
+  "build": {
+    "appId": "com.bennpham.hammerwatch2gen",
+    "productName": "Hammerwatch 2 Dungeon Generator",
+    "files": [
+      "out/**/*"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "nsis"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.2.0",
+    "electron": "^43.2.0",
+    "electron-builder": "^26.15.3",
+    "electron-vite": "^5.0.0",
+    "typescript": "^7.0.2",
+    "vite": "^7.3.6",
+    "vitest": "^4.1.10"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.1": true,
+    "esbuild@0.28.2": true
+  },
+  "//overrides": "Transitive, dev-only (electron-builder build chain); same pins as the AE generator, which force minimatch@10/glob@13 for the GHSA-mh99-v99m-4gvg fix.",
+  "overrides": {
+    "@electron/asar": "^4.2.1",
+    "@electron/universal": "^3.0.6",
+    "filelist": "^2.0.2",
+    "minimatch": "^10.2.6",
+    "global-agent": "^4.1.3"
+  }
+}
