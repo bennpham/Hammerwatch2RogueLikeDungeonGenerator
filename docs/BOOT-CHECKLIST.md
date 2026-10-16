@@ -16,7 +16,7 @@ Generate a scenario, install it from the app (or with `npm run gen -- --install`
 | T6 | A band portal is locked until its band has been reached, then works | UNCHECKED |
 | F1 | Floor 1 spawns a random room of the chosen theme and size | UNCHECKED |
 | F2 | Enemies match the floor's race and tier (`PlaceEnemies`) | UNCHECKED |
-| F3 | A secondary (deeper) exit appears, and its heart-key door can be opened | UNCHECKED |
+| F3 | A secondary (deeper) exit appears, with no locked heart-key door in front of it | UNCHECKED |
 | F4 | The secondary exit leads to floor N+1 and arrives at its entrance | UNCHECKED |
 | F5 | A floor's main exit leads back up and arrives at the previous floor's secondary exit | UNCHECKED |
 | F6 | The last floor of a band leads back to town (return start) | UNCHECKED |

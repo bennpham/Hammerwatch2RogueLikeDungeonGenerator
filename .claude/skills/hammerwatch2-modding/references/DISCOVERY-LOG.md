@@ -133,12 +133,26 @@ This is the template for our dungeon floors. It extends cave_a above with the fo
   - `SetScriptParamString{Param Level, Value next floor, #Scripts:[Query{ScriptComment secondary_entrance_exit}]}`;
   - `SetScriptParamString{Param StartID, Value random-instance, …same query}`.
 - The revealed exit also enables `LevelStart{StartID random_secondary-instance}`, where players arrive when they come back up.
-- Its door is a `DoorHelper{KeyItemID key_heart}`. The heart key presumably comes from the room's own content. [ASSUMED, checklist F3]
+- The prefab also has a heart-key door: `DoorHelper{KeyItemID key_heart}` over `#Doors` = the `AllSpawned` of a `SpawnUnit _door_1a_v`. Revealing the exit only *enables* that SpawnUnit and nothing fires it, so no door spawns and the exit is open. [VERIFIED by reading the graph; IN-GAME check F3] Heart keys are a quest item (flag `item_key_heart`) that no loot table drops, and `Door.TryUse` consumes one when `RemoveKeyOnUse` is on (the default). Never fire `autoscript_spawn_secondary_door_*`.
 
 **Loot**
 - `start_items` → `RandomChance(0.75)` → `MinMaxRandomCount{MaxNumToExecute 5|3, #ToExecute:[Query{ScriptComment spawn_level_random_reward, Type ScriptLink}]}`.
 - `start_option` → the same for `prefab_secret` (`Type GlobalEventTrigger`).
 - `cave_a_3` uses chance 1, which gives more loot on the final floor.
+
+**Stock pairings** of theme event and room set [VERIFIED, survey of every stock random cave]:
+- `theme_cave_light` with cave_light rooms.
+- `theme_cave_dark` with cave_dark or cave_light rooms.
+- `theme_prison` with prison medium rooms (region `prison2`).
+- Always `effects/env/grotto.env`; region `level_mysterious` except prison.
+- Tier events seen: `tier_apprentice`, `tier_adept`, `tier_expert`.
+
+**Enums**
+- `GameEventTrigger.Event`: 9 = `LevelEntered`, 5 = `FlagSet`.
+- `SetFlag.State` (`FlagBank.as`): Off 0, Level 1, Run 2, Town 3, TownAll 4, HostTown 5.
+- `UseTrigger.Icon` (`IUsable.as`): None, Generic, Cross, Key, Shop 4, Speech, Exit 6, …
+- `SetRespawnPoint.SpawnpointType`: Town 1, Safe 2, Unsafe 3.
+- `PotionRefill.State`: All 1, Inventory 2, Equipped 3.
 
 **Other nodes**
 - `DestroyUnitsRange{UnitType doodads/lamps/torch_default.unit, Radius 4000}` ("notorches").
