@@ -20,6 +20,7 @@ Paths:
   - Its progress lines are `1 / 1: levels/...`, `Sorting...`, `Hashing...`, `Writing...`.
   - Judge success by the produced file, which starts with `HW2S`.
   - The probe was a copy of cave_a.lvl plus a minimal info.xml; it gave a 1957-byte `.hsc`.
+- **[VERIFIED 2026-10-16]** A full generated scenario (town + 12 floors, seed 4242) packs cleanly. PACKAGER parses every level (`1 / 13: levels/rl_4242/floor_03.lvl` …) and logs no errors except the resources.xml line. It needs Steam running and logged in ("You must have the steam application running").
 - **[VERIFIED]** PACKAGER compiles `info.xml` into the header (it logs "serialized scenario info as info.sval"). **Do not write `info.sval`.**
 - **[VERIFIED]** `.hsc` layout:
   - `HW2S` + version byte (03) + 4-byte hash + u32 header length;
