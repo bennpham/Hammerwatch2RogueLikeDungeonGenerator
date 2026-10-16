@@ -4,6 +4,7 @@ import { mkdir, rename, rm, writeFile } from 'fs/promises'
 import { homedir } from 'os'
 import { dirname, join } from 'path'
 import type { GeneratedFile } from '../generator'
+import type { ActionResult } from '../shared/ipc'
 
 /**
  * Installing a generated scenario into Hammerwatch 2. Ported from the AE
@@ -15,12 +16,6 @@ export const HW2_DIR_NAME = 'Hammerwatch 2'
 
 /** The first four bytes of every packed HW2 scenario. [VERIFIED] */
 export const HSC_MAGIC = 'HW2S'
-
-export interface ActionResult {
-  ok: boolean
-  message: string
-  outputPath?: string
-}
 
 /** Write the scenario files into a target folder, creating subfolders. */
 export async function writeScenario(targetDir: string, files: GeneratedFile[]): Promise<void> {

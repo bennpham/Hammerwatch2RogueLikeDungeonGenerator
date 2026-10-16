@@ -23,6 +23,7 @@ Generates rogue-like **Hammerwatch 2** scenarios: a town hub with shops, then a 
 To run without the UI: `npm run gen -- --seed 42 --floors 9 --install`.
 
 ## Development
+- If `npm run dev` fails with `Cannot read properties of undefined (reading 'whenReady')`, your shell has `ELECTRON_RUN_AS_NODE=1` set (VS Code's integrated terminal can set it). Unset it first.
 See [CLAUDE.md](CLAUDE.md) and [the HW2 modding skill](.claude/skills/hammerwatch2-modding/references/DISCOVERY-LOG.md).
 - In-game checks are tracked in [docs/BOOT-CHECKLIST.md](docs/BOOT-CHECKLIST.md).
 - Mechanics planned but not built (quests, trainers, bosses, own layouts…) are in [docs/NEW-MECHANICS.md](docs/NEW-MECHANICS.md).

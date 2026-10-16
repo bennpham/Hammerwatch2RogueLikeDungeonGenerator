@@ -1,5 +1,6 @@
-import { BrowserWindow, app, ipcMain, shell } from 'electron'
+import { BrowserWindow, app, shell } from 'electron'
 import { join } from 'path'
+import { registerIpcHandlers } from './ipc'
 
 let mainWindow: BrowserWindow | null = null
 
@@ -37,7 +38,7 @@ function createWindow(): void {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle('app:ping', () => 'pong')
+  registerIpcHandlers(() => mainWindow)
   createWindow()
 
   app.on('activate', () => {
