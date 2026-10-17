@@ -49,8 +49,48 @@ export interface TownSpec {
   plaza?: string
 }
 
-const W = 48
-const H = 32
+const px = (tiles: number): number => tiles * TILE
+
+/**
+ * Layout, in 16-px tiles. North to south: shop row, well, spawn, then the
+ * dungeon entrances in rows of up to ENTRANCES_PER_ROW. The plaza grows to fit
+ * every entrance with WALL_CLEARANCE tiles between it and the hedge (whose
+ * art stands 2–3 tiles tall above its footprint).
+ */
+const MIN_W = 48
+const SHOP_Y = 7
+const WELL_Y = 13
+const SPAWN_Y = 18
+const ENTRANCE_Y = 23
+const ENTRANCE_DX = 6
+const ENTRANCE_DY = 5
+const ENTRANCES_PER_ROW = 6
+const WALL_CLEARANCE = 5
+
+export interface TownLayout {
+  width: number
+  height: number
+  /** pixel centre of each band's entrance, in band order */
+  entrances: Array<[number, number]>
+}
+
+const even = (n: number): number => n + (n % 2)
+
+export function townLayout(bandCount: number): TownLayout {
+  const cols = Math.max(1, Math.min(bandCount, ENTRANCES_PER_ROW))
+  const rows = Math.max(1, Math.ceil(bandCount / cols))
+  const width = even(Math.max(MIN_W, cols * ENTRANCE_DX + 2 * WALL_CLEARANCE + 2))
+  const height = even(ENTRANCE_Y + (rows - 1) * ENTRANCE_DY + WALL_CLEARANCE)
+  const entrances: Array<[number, number]> = []
+  for (let i = 0; i < bandCount; i++) {
+    const row = Math.floor(i / cols)
+    const inRow = Math.min(cols, bandCount - row * cols)
+    const col = i - row * cols
+    const x = width / 2 + (col - (inRow - 1) / 2) * ENTRANCE_DX
+    entrances.push([px(x), px(ENTRANCE_Y + row * ENTRANCE_DY)])
+  }
+  return { width, height, entrances }
+}
 const DEFAULT_WALLS = 'hedge_trimmed'
 const DEFAULT_GROUND = 'tilesets/grass_1_default.tileset'
 const DEFAULT_PLAZA = 'tilesets/stone_cobble.tileset'
@@ -62,7 +102,6 @@ const LIGHT = 'effects/lights/light_L.png'
 /** `UseTrigger.Icon` (IUsable.as) */
 const ICON_GENERIC = 1
 const ICON_SHOP = 4
-const ICON_EXIT = 6
 /** `SetRespawnPoint.SpawnpointType`: Town */
 const RESPAWN_TOWN = 1
 /** `GameEventTrigger.Event`: LevelEntered */
@@ -70,12 +109,14 @@ const EVENT_LEVEL_ENTERED = 9
 /** `ShowFloatingText.FloatingType` used by the stock cave entrances */
 const FLOAT_HINT = 10
 
-const px = (tiles: number): number => tiles * TILE
 
 export function buildTown(spec: TownSpec): Hw2Level {
   const lvl = new Hw2Level('effects/env/outside.env')
   lvl.gameMode = { cls: 'WorldGameMode', defaultRegion: 'his_town_haart' }
   const wallSet = spec.wallSet ?? DEFAULT_WALLS
+  const layout = townLayout(spec.bands.length)
+  const W = layout.width
+  const H = layout.height
 
   // --- ground: grass everywhere (grown under the wall ring), cobbles in the plaza
   const tiles = new TileLayers(tilesetSize)
@@ -89,7 +130,7 @@ export function buildTown(spec: TownSpec): Hw2Level {
 
   // --- starts, respawn ---------------------------------------------------------
   const spawnX = px(W / 2)
-  const spawnY = px(H - 9)
+  const spawnY = px(SPAWN_Y)
   lvl.addScript('LevelStart', spawnX, spawnY)
   lvl.addScript('LevelStart', spawnX, spawnY + 32, [P.str('StartID', TOWN_RETURN_START)], { label: TOWN_RETURN_START })
   const entered = lvl.addScript('GameEventTrigger', spawnX - 96, spawnY, [P.int('Event', EVENT_LEVEL_ENTERED)])
@@ -103,8 +144,8 @@ export function buildTown(spec: TownSpec): Hw2Level {
   // --- shop stalls along the north side -----------------------------------------
   const unlocked = TIERS.filter((t) => spec.tierFlags[t] !== undefined)
   TOWN_SHOPS.forEach((cat, i) => {
-    const cx = px(6 + i * 7)
-    const cy = px(7)
+    const cx = Math.round(px(W / 2 + (i - (TOWN_SHOPS.length - 1) / 2) * 7))
+    const cy = px(SHOP_Y)
     lvl.addUnit(COUNTER, cx, cy, { start: { kind: 'string', value: 'h_open' } })
     addLight(lvl, cx, cy + 8, [0.55, 0.42, 0.25, 0])
     const sensor = lvl.addCircleSensor(cx, cy + 28, 20)
@@ -137,7 +178,7 @@ export function buildTown(spec: TownSpec): Hw2Level {
 
   // --- the well: refill potions ---------------------------------------------------
   const wellX = px(W / 2)
-  const wellY = px(H / 2 - 2)
+  const wellY = px(WELL_Y)
   lvl.addUnit(WELL, wellX, wellY)
   const wellSensor = lvl.addCircleSensor(wellX, wellY + 20, 28)
   const wellUse = lvl.addScript('UseTrigger', wellX + 48, wellY, [P.ids('Areas', [wellSensor.id]), P.int('Icon', ICON_GENERIC)], { label: 'refill potions' })
@@ -145,14 +186,13 @@ export function buildTown(spec: TownSpec): Hw2Level {
   lvl.link(wellUse, refill)
   addLight(lvl, wellX, wellY, [0.35, 0.4, 0.5, 0])
 
-  // --- dungeon entrances along the south side ---------------------------------------
-  const n = spec.bands.length
+  // --- dungeon entrances: rows south of the spawn, band order ------------------------
   spec.bands.forEach((band, i) => {
-    const hx = Math.round(px(W / 2) + (i - (n - 1) / 2) * 96)
-    const hy = px(H - 5)
+    const [hx, hy] = layout.entrances[i]
     lvl.addUnit(HOLE, hx, hy, { start: { kind: 'string', value: 'hole_rope' } })
     addLight(lvl, hx, hy - 8, band.flag === null ? [0.5, 0.35, 0.2, 0] : [0.3, 0.3, 0.45, 0])
-    const sensor = lvl.addCircleSensor(hx, hy, 12)
+    // generous: standing at the hole's rim is enough to get the use prompt
+    const sensor = lvl.addCircleSensor(hx, hy, 20)
     const exit = lvl.addScript(
       'AllPlayersLevelExit',
       hx,

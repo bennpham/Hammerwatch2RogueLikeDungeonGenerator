@@ -34,7 +34,7 @@ describe('random-cave floor', () => {
   it('targets both neighbours and passes the scenario checks', () => {
     const targets = exitTargets(floor).map((t) => `${t.level}#${t.startId}`).sort()
     expect(targets).toEqual(['levels/t/floor_01.lvl#random_secondary-instance', 'levels/t/floor_03.lvl#random-instance'])
-    expect([...levelStarts(floor)].sort()).toEqual([START_FROM_ABOVE, START_FROM_BELOW].sort())
+    expect([...levelStarts(floor)].sort()).toEqual(['', START_FROM_ABOVE, START_FROM_BELOW].sort())
     const problems = checkScenario([
       { path: 'levels/t/floor_02.lvl', level: floor },
       { path: 'levels/t/floor_01.lvl', level: stub(START_FROM_BELOW) },
@@ -78,7 +78,7 @@ describe.skipIf(HW2_ROOT === null)('against the stock chained cave', () => {
     const ours = buildRandomCaveFloor(spec)
     const classes = (l: Hw2Level) => new Set(l.scripts.map((s) => s.cls))
     // everything we emit is something the stock floor uses (bar our extras)
-    const extras = new Set(['SetFlag', 'AnnounceText'])
+    const extras = new Set(['SetFlag', 'AnnounceText', 'LevelStart'])
     for (const c of classes(ours)) if (!extras.has(c)) expect(classes(stock)).toContain(c)
     expect(ours.prefabs).toEqual(stock.prefabs)
     expect(ours.environment).toBe(stock.environment)

@@ -45,6 +45,7 @@ Paths:
 	<includes><include name="hammerwatch2" levels="true" modifiers="true" /></includes>
 </info>
 ```
+- `<start>` may list several `<level name lvl/>` entries; they compile to the `StartLevels` array, and the game presumably offers a choice. [ASSUMED, checklist S4] A new game spawns at the LevelStart whose StartID is `""` (the save has no `start-id`; `BaseGameMode.as` ~1530), so every generated floor carries a default LevelStart at its arrival point.
 - `<saving>all</saving>` compiles to `Saving 2`. If omitted it is 1.
 - `<players min max>`: the lobby passes `MaxPlayers()` to `Lobby::SetPlayerLimit` and blocks Ready when the count is outside the range (`A/scripts/GUI/Menus/LobbyMenu.as:533,606`). No script caps it [VERIFIED]. Official scenarios use 4, Tranquility Shores 6, example_scenario 16. Whether the HUD and balance hold up beyond 4 is [ASSUMED], checklist S3. Enemy HP scales per player through `mp-scale-fact`.
 - `<tag>` is free text (mods use `HW2 tag`).
@@ -190,6 +191,12 @@ Tier upgrades are bought from trainer NPCs through quests (`A/tweak/quests/quest
 - `A/tweak/shop/shops.sval` includes about 40 `shop_<npc>.inc` files with ids `<npc>_shop`.
 - The `ShopArea` world script (`A/scripts/WorldScript/GUI/ShopArea.as`) opens a shop by `Shop` = `tweak/shop/shops.sval:<id>`.
 - Store NPC units (`A/actors/npcs/stores/`) open shops through dialog (`tweak/quests/quests_stores.inc` → `AddShopPrompt`) and follow hour-based `Schedule` place names.
+
+## 8b. Town doodads [VERIFIED]
+- `doodads/generic/exit_hole.unit` scene `hole_rope` has its collision commented out, so the hole is walkable.
+- `AllPlayersLevelExit` is an IUsable: a player inside one of its `Areas` gets a use prompt, and using it needs every living player inside.
+- Unit state `start` picks the doodad's scene (stock: `hole_rope`, counter `h_open`).
+- **IN-GAME 2026-10-16** (user): stalls open their shops (`ShopArea` works). A 30-floor run (10 bands) put entrances outside the 48-tile plaza, under the hedge. The town now grows to fit (`townLayout`).
 
 ## 9. Day/night, death
 

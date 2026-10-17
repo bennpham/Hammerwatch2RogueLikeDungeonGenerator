@@ -78,8 +78,10 @@ export function generateScenario(params: ScenarioParameters, seed?: number): Gen
         description:
           `${params.floors} random floors in ${bands} band${bands === 1 ? '' : 's'} of ${params.floorsPerBand}, ` +
           `${plan.town.bands[0].tier} to ${plan.town.bands[bands - 1].tier}. Seed ${s}.`,
-        startLevel: plan.townPath,
-        startName: 'Town',
+        starts: [
+          { name: 'Town', level: plan.townPath },
+          { name: 'Depth 1 (straight into the dungeon)', level: plan.floors[0].path }
+        ],
         persistentCharacters: params.persistentCharacters,
         maxPlayers: params.maxPlayers
       })

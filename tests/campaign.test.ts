@@ -83,7 +83,8 @@ describe('generateScenario', () => {
     expect(off).not.toContain('PERSISTENT_CHARS')
     for (const x of [on, off]) {
       expect(x).toContain('<start>')
-      expect(x).toContain('lvl="levels/rl_42/town.lvl"')
+      expect(x).toContain('<level name="Town" lvl="levels/rl_42/town.lvl" />')
+      expect(x).toContain('<level name="Depth 1 (straight into the dungeon)" lvl="levels/rl_42/floor_01.lvl" />')
       expect(x).toContain('id="EQUIPMENT_LOSS"')
     }
   })

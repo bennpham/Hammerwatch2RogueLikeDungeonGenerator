@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildTown, TOWN_RETURN_START } from '../src/generator/town/buildTown'
+import { buildTown, townLayout, TOWN_RETURN_START } from '../src/generator/town/buildTown'
 import { TOWN_SHOPS } from '../src/generator/catalog/townShops'
 import { TIERS } from '../src/generator/catalog/depth'
 import { shopExists } from '../src/generator/catalog/assets'
@@ -59,6 +59,20 @@ describe('town', () => {
   it('only the first band is open at the start', () => {
     const exits = town.scripts.filter((s) => s.cls === 'AllPlayersLevelExit')
     expect(exits.map((e) => e.enabled)).toEqual([true, false])
+  })
+
+  it('keeps every entrance inside the walls, however many bands', () => {
+    for (let n = 1; n <= 20; n++) {
+      const { width, height, entrances } = townLayout(n)
+      expect(entrances).toHaveLength(n)
+      for (const [x, y] of entrances) {
+        // at least 4 tiles of plaza between an entrance and the hedge
+        expect(x, `${n} bands`).toBeGreaterThanOrEqual(4 * 16)
+        expect(x).toBeLessThanOrEqual((width - 4) * 16)
+        expect(y).toBeLessThanOrEqual((height - 4) * 16)
+      }
+      expect(new Set(entrances.map((e) => e.join(','))).size).toBe(n)
+    }
   })
 
   it('round-trips through the writer', () => {

@@ -36,9 +36,11 @@ export const PERSISTENT_CHARS: ModifierDef = { id: 'PERSISTENT_CHARS', forced: t
 export interface ScenarioInfo {
   name: string
   description: string
-  /** scenario-relative path of the level a new game opens */
-  startLevel: string
-  startName: string
+  /**
+   * Levels a new game can open, first = default. Several are allowed
+   * (`<start>` compiles to the info.sval `StartLevels` array) and the game offers a choice.
+   */
+  starts: Array<{ name: string; level: string }>
   persistentCharacters: boolean
   minPlayers?: number
   maxPlayers?: number
@@ -57,7 +59,7 @@ export function renderInfoXml(info: ScenarioInfo): string {
     '\t<saving>all</saving>',
     '',
     '\t<start>',
-    `\t\t<level name="${escapeXml(info.startName)}" lvl="${escapeXml(info.startLevel)}" />`,
+    ...info.starts.map((s) => `\t\t<level name="${escapeXml(s.name)}" lvl="${escapeXml(s.level)}" />`),
     '\t</start>',
     '',
     '\t<modifiers>'

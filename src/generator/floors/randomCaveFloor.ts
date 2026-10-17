@@ -25,7 +25,8 @@ import { roomCaller } from '../catalog/depth'
  *
  * Players arrive from above at `random-instance` (the exit setup's
  * LevelStart) and from below at `random_secondary-instance` (enabled when
- * the secondary exit is revealed).
+ * the secondary exit is revealed). A default (StartID-less) LevelStart on
+ * the same spot lets a new game begin on the floor (a scenario start level).
  *
  * Positions copy the stock file; they only matter in the editor.
  */
@@ -200,6 +201,9 @@ export function buildRandomCaveFloor(spec: FloorSpec): Hw2Level {
       lvl.link(arrived, text, 500)
     }
   }
+
+  // a new game started on this floor (info.xml start level) spawns here
+  lvl.addScript('LevelStart', 0, 0, [], { label: 'new game' })
 
   lvl.prefabs.push({ path: 'prefabs/system/level_setup.pfb', x: 0, y: -544 }, { path: 'prefabs/system/randomcave_exit_setup.pfb', x: 0, y: 0 })
   return lvl
