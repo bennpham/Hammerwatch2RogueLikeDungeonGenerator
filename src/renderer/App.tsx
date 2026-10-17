@@ -122,8 +122,8 @@ export function App(): React.JSX.Element {
               </select>
             </label>
             <label>
-              Max players
-              <input type="number" min={1} max={4} value={params.maxPlayers} onChange={(e) => set('maxPlayers', Number(e.target.value))} />
+              Max players <span className="muted">(official campaign: 4)</span>
+              <input type="number" min={1} max={16} value={params.maxPlayers} onChange={(e) => set('maxPlayers', Number(e.target.value))} />
             </label>
             <label>
               Loot chance per floor: {Math.round(params.lootChance * 100)}%

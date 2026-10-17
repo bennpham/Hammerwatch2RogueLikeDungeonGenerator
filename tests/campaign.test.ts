@@ -88,6 +88,12 @@ describe('generateScenario', () => {
     }
   })
 
+  it('allows more than 4 players, up to 16', () => {
+    expect(gen({ maxPlayers: 8 }).files[0].content).toContain('<players min="1" max="8" />')
+    expect(gen({ maxPlayers: 16 }).files[0].content).toContain('max="16"')
+    expect(generateScenario({ ...DEFAULT_PARAMETERS, maxPlayers: 17 }, 1).ok).toBe(false)
+  })
+
   it('rejects bad parameters instead of crashing', () => {
     const r = generateScenario({ ...DEFAULT_PARAMETERS, floors: 0, themes: ['lava'], races: { ...DEFAULT_PARAMETERS.races, adept: ['dragon'] } }, 1)
     expect(r.ok).toBe(false)

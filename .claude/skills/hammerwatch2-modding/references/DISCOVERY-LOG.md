@@ -46,6 +46,7 @@ Paths:
 </info>
 ```
 - `<saving>all</saving>` compiles to `Saving 2`. If omitted it is 1.
+- `<players min max>`: the lobby passes `MaxPlayers()` to `Lobby::SetPlayerLimit` and blocks Ready when the count is outside the range (`A/scripts/GUI/Menus/LobbyMenu.as:533,606`). No script caps it [VERIFIED]. Official scenarios use 4, Tranquility Shores 6, example_scenario 16. Whether the HUD and balance hold up beyond 4 is [ASSUMED], checklist S3. Enemy HP scales per player through `mp-scale-fact`.
 - `<tag>` is free text (mods use `HW2 tag`).
 - Modifier entries take `name`, `tooltip` and `id`. With `forced="true"` the modifier is always on and cannot be unticked.
 - Tranquility Shores ships the stock switches explicitly:

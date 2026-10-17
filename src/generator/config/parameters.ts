@@ -23,6 +23,11 @@ export interface ScenarioParameters {
   lootChance: number
   /** force PERSISTENT_CHARS: play (and farm) the official ARPG's characters */
   persistentCharacters: boolean
+  /**
+   * `<players max>` in info.xml; the lobby enforces it (LobbyMenu.as) and no
+   * script caps it. Official campaign: 4; mods ship 6 (Tranquility Shores)
+   * and 16 (the developers' example_scenario).
+   */
   maxPlayers: number
 }
 
@@ -46,7 +51,7 @@ export const DEFAULT_PARAMETERS: ScenarioParameters = {
 export const LIMITS = {
   floors: [1, 60],
   floorsPerBand: [1, 10],
-  maxPlayers: [1, 4]
+  maxPlayers: [1, 16]
 } as const
 
 export type ValidationResult = { ok: true } | { ok: false; errors: string[] }

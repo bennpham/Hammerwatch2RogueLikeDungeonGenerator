@@ -6,6 +6,7 @@ Generate a scenario, install it from the app (or with `npm run gen -- --install`
 |---|---|---|
 | S1 | The scenario appears in the list once (not twice) after install | UNCHECKED |
 | S2 | A new game starts in the town | UNCHECKED |
+| S3 | With max players above 4 (e.g. 8), more than 4 can join the lobby and play, and the HUD copes | UNCHECKED |
 | P1 | Persistence ON: the character picker offers existing ARPG characters (pool 1000000) | UNCHECKED |
 | P2 | Persistence OFF: a fresh character is created and stored in this scenario's save | UNCHECKED |
 | T1 | The town loads with floor tiles and an unbroken wall ring, and nobody can walk out | UNCHECKED |
